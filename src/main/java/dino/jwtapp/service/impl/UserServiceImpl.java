@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
 @Slf4j
+@Transactional
 public class UserServiceImpl implements UserService
 {
     private final UserRepository userRepository;
@@ -80,5 +82,14 @@ public class UserServiceImpl implements UserService
     {
         userRepository.deleteById(id);
         log.info("IN delete - user with id: {} successfully deleted", id);
+    }
+
+    @Override
+    public boolean deleteByUsername(String username)
+    {
+        if (userRepository.findByUsername(username) == null)
+            return false;
+        userRepository.deleteByUsername(username);
+        return true;
     }
 }
