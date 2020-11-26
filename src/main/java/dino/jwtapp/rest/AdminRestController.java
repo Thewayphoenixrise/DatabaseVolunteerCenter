@@ -3,7 +3,9 @@ package dino.jwtapp.rest;
 import dino.jwtapp.security.jwt.JwtTokenProvider;
 import dino.jwtapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,12 +25,12 @@ public class AdminRestController
         this.userService = userService;
     }
 
-    /*@RequestMapping(value = "delete/{login}")
-    public HttpStatus deleteByLogin(@PathVariable(name = "login") String login)
+    @RequestMapping(value = "delete/{login}")
+    public HttpStatus deleteByUsername(@PathVariable(name = "login") String username)
     {
-        if (userService.deleteByLogin(login))
+        if (userService.deleteByUsername(username))
             return HttpStatus.OK;
         return HttpStatus.BAD_REQUEST;
-    }*/
+    }
 
 }
