@@ -43,13 +43,6 @@ public class JwtTokenProvider
                 .compact();
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder()
-    {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
-    }
-
     @PostConstruct
     protected void init()
     {

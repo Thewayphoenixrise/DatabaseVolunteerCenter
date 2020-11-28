@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import dino.jwtapp.security.jwt.JwtConfigurer;
 import dino.jwtapp.security.jwt.JwtTokenProvider;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter
@@ -31,6 +32,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     public AuthenticationManager authenticationManager() throws Exception
     {
         return super.authenticationManager();
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder()
+    {
+        return new BCryptPasswordEncoder();
     }
 
     @Override

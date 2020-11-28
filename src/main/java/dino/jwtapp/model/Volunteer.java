@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "volunteers")
@@ -68,4 +69,39 @@ public class Volunteer
     @ManyToOne
     @JoinColumn(name = "loyalty_level")
     private LoyaltyCard loyaltyCard;
+
+    @ManyToMany
+    @JoinTable(
+            name = "activities_of_volunteers",
+            joinColumns = {@JoinColumn(name = "volunteer_id")},
+            inverseJoinColumns = {@JoinColumn(name = "activity_id")})
+    private List<Activity> activities;
+
+    @ManyToMany
+    @JoinTable(
+            name = "events_of_volunteers",
+            joinColumns = {@JoinColumn(name = "volunteer_id")},
+            inverseJoinColumns = {@JoinColumn(name = "event_id")})
+    private List<Event> events;
+
+    @ManyToMany
+    @JoinTable(
+            name = "langs_of_volunteers",
+            joinColumns = {@JoinColumn(name = "volunteer_id")},
+            inverseJoinColumns = {@JoinColumn(name = "language_id")})
+    private List<Language> languages;
+
+    @ManyToMany
+    @JoinTable(
+            name = "media_skills_of_volunteers",
+            joinColumns = {@JoinColumn(name = "volunteer_id")},
+            inverseJoinColumns = {@JoinColumn(name = "media_skill_id")})
+    private List<MediaSkill> mediaSkills;
+
+    @ManyToMany
+    @JoinTable(
+            name = "scholarships_of_volunteers",
+            joinColumns = {@JoinColumn(name = "volunteer_id")},
+            inverseJoinColumns = {@JoinColumn(name = "scholarship_id")})
+    private List<Scholarship> scholarships;
 }
