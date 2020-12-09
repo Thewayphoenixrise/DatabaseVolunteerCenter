@@ -1,9 +1,12 @@
 package dino.jwtapp.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "organizations")
+@Data
 public class Organization
 {
     @Id

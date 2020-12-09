@@ -58,7 +58,6 @@ public class AuthenticationRestController
             log.info("Register - Username: {} is busy", user.getUsername());
             return "NO";
         }
-
     }
 
     @PostMapping("auth")
