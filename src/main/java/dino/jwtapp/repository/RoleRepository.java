@@ -6,5 +6,4 @@ import dino.jwtapp.model.Role;
 public interface RoleRepository extends JpaRepository<Role, Long>
 {
     Role findByName(String name);
-
 }

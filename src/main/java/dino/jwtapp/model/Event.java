@@ -25,4 +25,8 @@ public class Event
 
     @Column(name = "date_end")
     private Timestamp dateEnd;
+
+    @ManyToOne
+    @JoinColumn(name = "organizer")
+    private Organization org;
 }

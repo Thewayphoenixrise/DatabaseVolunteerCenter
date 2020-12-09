@@ -3,6 +3,8 @@ package dino.jwtapp.rest;
 import dino.jwtapp.dto.AddVolunteerRequestDto;
 import dino.jwtapp.dto.FindVolunteerRequestDto;
 import dino.jwtapp.model.Volunteer;
+import dino.jwtapp.model.VolunteerInfo;
+import dino.jwtapp.service.VolunteerInfoService;
 import dino.jwtapp.service.VolunteerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,13 @@ import java.util.List;
 public class VolunteerRestController
 {
     private final VolunteerService volunteerService;
+    private final VolunteerInfoService volunteerInfoService;
 
     @Autowired
-    public VolunteerRestController(VolunteerService volunteerService)
+    public VolunteerRestController(VolunteerService volunteerService, VolunteerInfoService volunteerInfoService)
     {
         this.volunteerService = volunteerService;
+        this.volunteerInfoService = volunteerInfoService;
     }
 
     @PostMapping("adding")
@@ -64,6 +68,17 @@ public class VolunteerRestController
     {
         log.info("Get all volunteers:");
         List<Volunteer> result = volunteerService.getAll();
+
+        return result != null
+                ? new ResponseEntity<>(result, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("get_views")
+    public ResponseEntity<List<VolunteerInfo>> getAllVolunteersView()
+    {
+        log.info("Get all volunteers:");
+        List<VolunteerInfo> result = volunteerInfoService.getAllViews();
 
         return result != null
                 ? new ResponseEntity<>(result, HttpStatus.OK)
