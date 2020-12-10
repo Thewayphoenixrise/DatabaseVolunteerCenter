@@ -4,6 +4,7 @@ import dino.jwtapp.model.User;
 import dino.jwtapp.model.Volunteer;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface VolunteerService
 {
@@ -11,11 +12,11 @@ public interface VolunteerService
 
     List<Volunteer> getAll();
 
-    List<Volunteer> findBySex(String sex);
+    Optional<Volunteer> findById(Long id);
+
+    boolean deleteById(Long id);
 
     List<Volunteer> findByFirstName(String volunteerFirstName);
 
     List<Volunteer> findByLastName(String volunteerLastName);
-
-    void deleteByFullName(String volunteerFullName);
 }

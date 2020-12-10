@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -53,7 +55,9 @@ public class VolunteerRestController
 
         try
         {
-            volunteerService.add(volunteer);
+            if (volunteerService.add(volunteer) == null)
+                return "Already existed";
+
             return "OK";
         } catch (Exception e)
         {
@@ -63,7 +67,7 @@ public class VolunteerRestController
 
     }
 
-    @GetMapping("get")
+    @GetMapping("get_all")
     public ResponseEntity<List<Volunteer>> getAllVolunteers()
     {
         log.info("Get all volunteers:");
@@ -71,6 +75,18 @@ public class VolunteerRestController
 
         return result != null
                 ? new ResponseEntity<>(result, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("get")
+    public ResponseEntity<Volunteer> findById(HttpServletRequest request)
+    {
+        Long id = Long.parseLong(request.getParameter("id"));
+        log.info("Get volunteer by id: " + id);
+        Optional<Volunteer> result = volunteerService.findById(id);
+
+        return result.isPresent()
+                ? new ResponseEntity<>(result.get(), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -83,6 +99,16 @@ public class VolunteerRestController
         return result != null
                 ? new ResponseEntity<>(result, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(value = "delete/{id}")
+    public HttpStatus deleteVolById(@PathVariable(name = "id") String id)
+    {
+        if (volunteerService.deleteById(Long.valueOf(
+                id.replace("{", "")
+                        .replace("}", ""))))
+            return HttpStatus.OK;
+        return HttpStatus.BAD_REQUEST;
     }
 
     @GetMapping("find")

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -24,9 +25,16 @@ public class VolunteerServiceImpl implements VolunteerService
     @Override
     public Volunteer add(Volunteer volunteer)
     {
-        Volunteer added = volunteerRepository.save(volunteer);
-        log.info("IN add - volunteer: {} successfully registered", added);
-        return added;
+        log.info("IN add - volunteer: {} adding", volunteer);
+
+        Volunteer found = volunteerRepository.findByFirstNameAndLastNameAndPatronymicAndEmail(
+                volunteer.getFirstName(), volunteer.getLastName(), volunteer.getPatronymic(), volunteer.getEmail()
+        );
+
+        if (found != null)
+            return null;
+        else
+            return volunteerRepository.save(volunteer);
     }
 
     @Override
@@ -38,11 +46,21 @@ public class VolunteerServiceImpl implements VolunteerService
     }
 
     @Override
-    public List<Volunteer> findBySex(String sex)
+    public Optional<Volunteer> findById(Long id)
     {
-        List<Volunteer> result = volunteerRepository.findBySex(sex);
-        log.info("IN findByFirstName - volunteer: {} found by firstName: {}", result, sex);
-        return result;
+        log.info("IN findById - volunteer, id: {}", id);
+        return volunteerRepository.findById(id);
+    }
+
+    @Override
+    public boolean deleteById(Long id)
+    {
+        log.info("DELETING {}", volunteerRepository.findById(id));
+        log.info("IN deleteById - volunteer, id: {}", id);
+        if (volunteerRepository.findById(id).isEmpty())
+            return false;
+        volunteerRepository.deleteById(id);
+        return true;
     }
 
     @Override
@@ -59,14 +77,5 @@ public class VolunteerServiceImpl implements VolunteerService
         List<Volunteer> result = volunteerRepository.findByLastName(volunteerLastName);
         log.info("IN findByFirstName - volunteer: {} found by lastName: {}", result, volunteerLastName);
         return result;
-    }
-
-    @Override
-    public void deleteByFullName(String volunteerFullName)
-    {
-        /*if (volunteerFullName.findByFullName(volunteerFullName) == null)
-            return false;
-        volunteerRepository.deleteByFullName(volunteerFullName);
-        return true;*/
     }
 }

@@ -9,7 +9,9 @@ public interface InfoService
 {
     Event addEvent(Event event);
     List<Event> getAllEvents();
+    boolean deleteEventById(Long id);
 
     Organization addOrg(Organization org);
     List<Organization> getAllOrgs();
+    boolean deleteOrgById(Long id);
 }

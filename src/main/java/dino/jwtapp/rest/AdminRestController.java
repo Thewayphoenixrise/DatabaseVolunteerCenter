@@ -4,6 +4,7 @@ import dino.jwtapp.dto.EventRequestDto;
 import dino.jwtapp.dto.OrganizationDto;
 import dino.jwtapp.model.Event;
 import dino.jwtapp.model.Organization;
+import dino.jwtapp.model.User;
 import dino.jwtapp.security.jwt.JwtTokenProvider;
 import dino.jwtapp.service.InfoService;
 import dino.jwtapp.service.UserService;
@@ -33,6 +34,17 @@ public class AdminRestController
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.infoService = infoService;
+    }
+
+    @GetMapping("users/get")
+    public ResponseEntity<List<User>> getAllUsers()
+    {
+        log.info("Get all users:");
+        List<User> result = userService.getAll();
+
+        return result != null
+                ? new ResponseEntity<>(result, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "delete/{login}")
@@ -75,6 +87,14 @@ public class AdminRestController
         }
     }
 
+    @RequestMapping(value = "events/delete/{id}")
+    public HttpStatus deleteEventById(@PathVariable(name = "id") Long id)
+    {
+        if (infoService.deleteEventById(id))
+            return HttpStatus.OK;
+        return HttpStatus.BAD_REQUEST;
+    }
+
     @GetMapping("orgs/get")
     public ResponseEntity<List<Organization>> getAllOrgs()
     {
@@ -104,5 +124,13 @@ public class AdminRestController
             log.info("Added - Event: {} is busy", org.getName());
             return "NO";
         }
+    }
+
+    @RequestMapping(value = "orgs/delete/{id}")
+    public HttpStatus deleteOrgById(@PathVariable(name = "id") Long id)
+    {
+        if (infoService.deleteOrgById(id))
+            return HttpStatus.OK;
+        return HttpStatus.BAD_REQUEST;
     }
 }

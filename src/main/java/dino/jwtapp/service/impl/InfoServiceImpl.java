@@ -41,6 +41,15 @@ public class InfoServiceImpl implements InfoService
     }
 
     @Override
+    public boolean deleteEventById(Long id)
+    {
+        if (eventsRepository.findById(id).isPresent())
+            return false;
+        eventsRepository.deleteById(id);
+        return true;
+    }
+
+    @Override
     public Organization addOrg(Organization org)
     {
         Organization addedOrg = organizationRepository.save(org);
@@ -53,5 +62,14 @@ public class InfoServiceImpl implements InfoService
     public List<Organization> getAllOrgs()
     {
         return organizationRepository.findAll();
+    }
+
+    @Override
+    public boolean deleteOrgById(Long id)
+    {
+        if (organizationRepository.findById(id).isPresent())
+            return false;
+        organizationRepository.deleteById(id);
+        return true;
     }
 }
