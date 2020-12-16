@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class RegistrationRequestDto
 {
+    private String id;
     private String username;
     private String firstName;
     private String lastName;

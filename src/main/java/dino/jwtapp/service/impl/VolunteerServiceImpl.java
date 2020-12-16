@@ -1,5 +1,6 @@
 package dino.jwtapp.service.impl;
 
+import dino.jwtapp.model.Event;
 import dino.jwtapp.model.Volunteer;
 import dino.jwtapp.repository.VolunteerRepository;
 import dino.jwtapp.service.VolunteerService;
@@ -61,6 +62,14 @@ public class VolunteerServiceImpl implements VolunteerService
             return false;
         volunteerRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public List<Volunteer> findByEvent(Event event)
+    {
+        List<Volunteer> result = volunteerRepository.findByEvents(event);
+        log.info("IN findByEvent - volunteer: {} found by event: {}", result, event);
+        return result;
     }
 
     @Override

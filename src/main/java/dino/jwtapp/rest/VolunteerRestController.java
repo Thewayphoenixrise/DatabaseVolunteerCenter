@@ -2,8 +2,10 @@ package dino.jwtapp.rest;
 
 import dino.jwtapp.dto.AddVolunteerRequestDto;
 import dino.jwtapp.dto.FindVolunteerRequestDto;
+import dino.jwtapp.model.Event;
 import dino.jwtapp.model.Volunteer;
 import dino.jwtapp.model.VolunteerInfo;
+import dino.jwtapp.service.InfoService;
 import dino.jwtapp.service.VolunteerInfoService;
 import dino.jwtapp.service.VolunteerService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,18 +25,21 @@ public class VolunteerRestController
 {
     private final VolunteerService volunteerService;
     private final VolunteerInfoService volunteerInfoService;
+    private final InfoService infoService;
 
     @Autowired
-    public VolunteerRestController(VolunteerService volunteerService, VolunteerInfoService volunteerInfoService)
+    public VolunteerRestController(VolunteerService volunteerService, VolunteerInfoService volunteerInfoService, InfoService infoService)
     {
         this.volunteerService = volunteerService;
         this.volunteerInfoService = volunteerInfoService;
+        this.infoService = infoService;
     }
 
     @PostMapping("adding")
     public Object add(@RequestBody AddVolunteerRequestDto addVolunteerRequestDto)
     {
         Volunteer volunteer = new Volunteer();
+        volunteer.setId(addVolunteerRequestDto.getId());
         volunteer.setFirstName(addVolunteerRequestDto.getFirstName());
         volunteer.setLastName(addVolunteerRequestDto.getLastName());
         volunteer.setPatronymic(addVolunteerRequestDto.getPatronymic());
@@ -88,6 +93,19 @@ public class VolunteerRestController
         return result.isPresent()
                 ? new ResponseEntity<>(result.get(), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("get_by_event")
+    public ResponseEntity<List<Volunteer>> findByEvent(HttpServletRequest request)
+    {
+        Long id = Long.parseLong(request.getParameter("event_id"));
+        log.info("Get volunteer by event id: " + id);
+        Optional<Event> event = infoService.findEventById(id);
+        if (event.isEmpty())
+            new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<Volunteer> result = volunteerService.findByEvent(event.get());
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("get_views")

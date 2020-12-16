@@ -2,9 +2,8 @@ package dino.jwtapp.rest;
 
 import dino.jwtapp.dto.EventRequestDto;
 import dino.jwtapp.dto.OrganizationDto;
-import dino.jwtapp.model.Event;
-import dino.jwtapp.model.Organization;
-import dino.jwtapp.model.User;
+import dino.jwtapp.dto.RegistrationRequestDto;
+import dino.jwtapp.model.*;
 import dino.jwtapp.security.jwt.JwtTokenProvider;
 import dino.jwtapp.service.InfoService;
 import dino.jwtapp.service.UserService;
@@ -15,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -70,6 +71,7 @@ public class AdminRestController
     public Object addEvent(@RequestBody EventRequestDto eventRequestDto)
     {
         Event event = new Event();
+        event.setId(eventRequestDto.getId());
         event.setName(eventRequestDto.getName());
         event.setShortName(eventRequestDto.getShortName());
         event.setDateBegin(eventRequestDto.getDateBegin());
@@ -110,6 +112,7 @@ public class AdminRestController
     public Object addOrg(@RequestBody OrganizationDto orgDto)
     {
         Organization org = new Organization();
+        org.setId(org.getId());
         org.setName(orgDto.getName());
         org.setContactPerson(orgDto.getContactPerson());
         org.setEmail(orgDto.getEmail());
@@ -126,11 +129,49 @@ public class AdminRestController
         }
     }
 
+    @GetMapping("orgs/get_events")
+    public ResponseEntity<List<Event>> findEventById(HttpServletRequest request)
+    {
+        Long id = Long.parseLong(request.getParameter("id"));
+        log.info("Get events by org_id: " + id);
+        Optional<Organization> org = infoService.findOrgById(id);
+
+        if (org.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        List<Event> result = infoService.findEventsByOrg(org.get());
+
+        return result.size() != 0
+                ? new ResponseEntity<>(result, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @RequestMapping(value = "orgs/delete/{id}")
     public HttpStatus deleteOrgById(@PathVariable(name = "id") Long id)
     {
         if (infoService.deleteOrgById(id))
             return HttpStatus.OK;
         return HttpStatus.BAD_REQUEST;
+    }
+
+    @PostMapping("users/set_role")
+    public Object setUserRole(HttpServletRequest request)
+    {
+        Long id = Long.parseLong(request.getParameter("id"));
+        User user = userService.findById(id);
+        Role role = infoService.findRoleByName(request.getParameter("role"));
+        user.setRole(role);
+
+        log.info("Set to {} role: {}" + user.getUsername(), role.getName());
+
+        try
+        {
+            userService.save(user);
+            return "OK";
+        } catch (Exception e)
+        {
+            log.info("Register - Username: {} is busy", user.getUsername());
+            return "NO";
+        }
     }
 }

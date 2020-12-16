@@ -1,5 +1,6 @@
 package dino.jwtapp.repository;
 
+import dino.jwtapp.model.Event;
 import dino.jwtapp.model.Volunteer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,4 +14,5 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long>
     List<Volunteer> findBySex(String sex);
     Volunteer findByFirstNameAndLastNameAndPatronymicAndEmail(
             String firstName, String lastName, String Patronymic, String email);
+    List<Volunteer> findByEvents(Event event);
 }

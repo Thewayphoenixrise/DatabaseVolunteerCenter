@@ -1,5 +1,6 @@
 package dino.jwtapp.service;
 
+import dino.jwtapp.model.Event;
 import dino.jwtapp.model.User;
 import dino.jwtapp.model.Volunteer;
 
@@ -15,6 +16,8 @@ public interface VolunteerService
     Optional<Volunteer> findById(Long id);
 
     boolean deleteById(Long id);
+
+    List<Volunteer> findByEvent(Event event);
 
     List<Volunteer> findByFirstName(String volunteerFirstName);
 
